@@ -2,13 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Relay from "react-relay";
 
-class Home extends React.Component {
-  render() {
-    return <div>Home</div>;
-  }
-}
+import Main from "./components/main";
 
-ReactDOM.render(<Home />, document.getElementById("root"));
+ReactDOM.render(<Main />, document.getElementById("root"));
 
 console.log(Relay.QL`
 query Links{

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "webpack -w -d | npm run serve",
     "serve": "nodemon ./server/server.js --exec babel-node",
+    "webpack": "webpack -w -d",
     "gql-schema": "babel-node ./server/babelRelaySchema",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
