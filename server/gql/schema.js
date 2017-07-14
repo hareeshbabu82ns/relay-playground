@@ -28,7 +28,11 @@ const LinkType = new GraphQLObjectType({
       resolve: obj => obj._id
     },
     title: { type: GraphQLString },
-    url: { type: GraphQLString }
+    url: { type: GraphQLString },
+    createdAt: {
+      type: GraphQLString,
+      resolve: obj => new Date(obj.createdAt).toISOString()
+    }
   })
 });
 const CounterType = new GraphQLObjectType({
@@ -51,7 +55,10 @@ const storeType = new GraphQLObjectType({
       type: linkConnection.connectionType,
       args: connectionArgs,
       resolve: (parentValue, args) =>
-        connectionFromPromisedArray(Link.find({}).limit(args.first), args)
+        connectionFromPromisedArray(
+          Link.find({}).sort({ createdAt: -1 }).limit(args.first),
+          args
+        )
     }
   })
 });
@@ -76,7 +83,7 @@ const createLinkMutation = mutationWithClientMutationId({
     }
   },
   mutateAndGetPayload: ({ title, url }) => {
-    const link = new Link({ title, url });
+    const link = new Link({ title, url, createdAt: Date.now() });
     return link.save();
   }
 });

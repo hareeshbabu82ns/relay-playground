@@ -1,13 +1,20 @@
 import React from "react";
 import Relay from "react-relay/classic";
+import moment from "moment";
 
 class Link extends React.Component {
+  dateLabel = () => {
+    const { link, relay } = this.props;
+    return relay.hasOptimisticUpdate(link)
+      ? "Saving..."
+      : moment(link.createdAt).format("L");
+  };
   render() {
     const { link } = this.props;
     return (
       <li>
         <a href={link.url}>
-          {link.title}
+          {this.dateLabel()} - {link.title}
         </a>
       </li>
     );
@@ -19,6 +26,7 @@ export default Relay.createContainer(Link, {
       fragment on Link{
         title
         url
+        createdAt
       }
     `
   }
