@@ -3,8 +3,16 @@ import {
   GraphQLObjectType,
   GraphQLInt,
   GraphQLString,
-  GraphQLList
+  GraphQLList,
+  GraphQLID,
+  GraphQLNonNull
 } from "graphql";
+
+import {
+  connectionDefinitions,
+  connectionArgs,
+  connectionFromPromisedArray
+} from "graphql-relay";
 
 import mongoose from "mongoose";
 
@@ -13,7 +21,10 @@ const Link = mongoose.model("Link");
 const LinkType = new GraphQLObjectType({
   name: "Link",
   fields: () => ({
-    _id: { type: GraphQLString },
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
+      resolve: obj => obj._id
+    },
     title: { type: GraphQLString },
     url: { type: GraphQLString }
   })
@@ -33,11 +44,17 @@ const store = {};
 const storeType = new GraphQLObjectType({
   name: "Store",
   fields: () => ({
-    links: {
-      type: new GraphQLList(LinkType),
-      resolve: () => Link.find({})
+    linkConnection: {
+      type: linkConnection.connectionType,
+      args: connectionArgs,
+      resolve: (parentValue, args) =>
+        connectionFromPromisedArray(Link.find({}).limit(args.first), args)
     }
   })
+});
+const linkConnection = connectionDefinitions({
+  name: "Link",
+  nodeType: LinkType
 });
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
