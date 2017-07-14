@@ -11,6 +11,8 @@ import {
 import {
   connectionDefinitions,
   connectionArgs,
+  fromGlobalId,
+  nodeDefinitions,
   connectionFromPromisedArray,
   mutationWithClientMutationId,
   globalIdField
@@ -46,21 +48,42 @@ const CounterType = new GraphQLObjectType({
 let counter = 100;
 const data = [{ counter: 33 }, { counter: 88 }, { counter: 43 }];
 
-const store = {};
+class Store {}
+const store = new Store();
+
+const nodeDefs = nodeDefinitions(
+  globalId => {
+    const { type } = fromGlobalId(globalId);
+    return type === "Store" ? store : null;
+  },
+  obj => {
+    return obj instanceof Store ? storeType : null;
+  }
+);
+
 const storeType = new GraphQLObjectType({
   name: "Store",
   fields: () => ({
     id: globalIdField("Store"),
     linkConnection: {
       type: linkConnection.connectionType,
-      args: connectionArgs,
-      resolve: (parentValue, args) =>
-        connectionFromPromisedArray(
-          Link.find({}).sort({ createdAt: -1 }).limit(args.first),
+      args: {
+        ...connectionArgs,
+        query: { type: GraphQLString }
+      },
+      resolve: (parentValue, args) => {
+        const findParams = {};
+        if (args.query) {
+          findParams.title = new RegExp(args.query, "i");
+        }
+        return connectionFromPromisedArray(
+          Link.find(findParams).sort({ createdAt: -1 }).limit(args.first),
           args
-        )
+        );
+      }
     }
-  })
+  }),
+  interfaces: [nodeDefs.nodeInterface]
 });
 const linkConnection = connectionDefinitions({
   name: "Link",
@@ -100,6 +123,7 @@ const schema = new GraphQLSchema({
         type: new GraphQLList(CounterType),
         resolve: () => data
       },
+      node: nodeDefs.nodeField,
       store: {
         type: storeType,
         resolve: () => store

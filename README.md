@@ -14,3 +14,4 @@
 * mongoose
 * graphql express-graphql
 * react-relay babel-relay-plugin graphql-relay
+* moment lodash

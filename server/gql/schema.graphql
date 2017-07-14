@@ -44,6 +44,12 @@ type Mutation {
   createLink(input: CreateLinkInput!): CreateLinkPayload
 }
 
+# An object with an ID
+interface Node {
+  # The id of the object.
+  id: ID!
+}
+
 # Information about pagination in a connection.
 type PageInfo {
   # When paginating forwards, are there more items?
@@ -62,11 +68,17 @@ type PageInfo {
 type Query {
   counter: Int
   data: [Counter]
+
+  # Fetches an object given its ID
+  node(
+    # The ID of an object
+    id: ID!
+  ): Node
   store: Store
 }
 
-type Store {
+type Store implements Node {
   # The ID of an object
   id: ID!
-  linkConnection(after: String, first: Int, before: String, last: Int): LinkConnection
+  linkConnection(after: String, first: Int, before: String, last: Int, query: String): LinkConnection
 }
