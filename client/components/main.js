@@ -1,17 +1,12 @@
 import React from "react";
+import Relay from "react-relay/classic";
+
+import Link from "./link";
 
 class Main extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { links: props.links ? props.links : [] };
-  }
   render() {
-    const links = this.state.links.map(link =>
-      <li>
-        <a href={link.url}>
-          {link.title}
-        </a>
-      </li>
+    const links = this.props.store.links.map(link =>
+      <Link key={link._id} link={link} />
     );
     return (
       <ul>
@@ -21,4 +16,15 @@ class Main extends React.Component {
   }
 }
 
-export default Main;
+export default Relay.createContainer(Main, {
+  fragments: {
+    store: () => Relay.QL`
+      fragment on Store{
+        links{
+          _id
+          ${Link.getFragment("link")}
+        }
+      }
+    `
+  }
+});
