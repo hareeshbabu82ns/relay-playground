@@ -1,4 +1,7 @@
 
+## Run
+* yarn start - for both backend and frontend with webpack
+* yarn serve - for backend server
 ## packages
 
 * express
@@ -9,3 +12,4 @@
 * babel babel-core babel-loader
 * babel-preset-react babel-preset-es2015 babel-preset-stage-0
 * mongoose
+* graphql express-graphql

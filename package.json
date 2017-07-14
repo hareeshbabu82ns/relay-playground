@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run serve && webpack -w -d",
-    "serve": "babel-node --presets react,es2015,stage-0 ./server/server.js",
+    "start": "webpack -w -d | npm run serve",
+    "serve": "nodemon ./server/server.js --exec babel-node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,6 +19,8 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "express": "^4.15.3",
+    "express-graphql": "^0.6.6",
+    "graphql": "^0.10.3",
     "mongoose": "^4.11.2",
     "nodemon": "^1.11.0",
     "react": "^15.6.1",

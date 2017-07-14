@@ -1,7 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
+import { graphql } from "graphql";
+import GraphQLHTTP from "express-graphql";
 
 import LinkModel from "./mongodb/links";
+import graphQLSchema from "./gql/schema";
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URL =
@@ -11,6 +14,14 @@ const MONGO_URL =
 const app = express();
 
 app.use(express.static("client"));
+
+app.use(
+  "/graphql",
+  GraphQLHTTP({
+    schema: graphQLSchema,
+    graphiql: true
+  })
+);
 
 mongoose.Promise = global.Promise;
 mongoose.connect(MONGO_URL, err => {
