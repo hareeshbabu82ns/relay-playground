@@ -11,7 +11,9 @@ import {
 import {
   connectionDefinitions,
   connectionArgs,
-  connectionFromPromisedArray
+  connectionFromPromisedArray,
+  mutationWithClientMutationId,
+  globalIdField
 } from "graphql-relay";
 
 import mongoose from "mongoose";
@@ -44,6 +46,7 @@ const store = {};
 const storeType = new GraphQLObjectType({
   name: "Store",
   fields: () => ({
+    id: globalIdField("Store"),
     linkConnection: {
       type: linkConnection.connectionType,
       args: connectionArgs,
@@ -56,6 +59,28 @@ const linkConnection = connectionDefinitions({
   name: "Link",
   nodeType: LinkType
 });
+const createLinkMutation = mutationWithClientMutationId({
+  name: "CreateLink",
+  inputFields: {
+    title: { type: new GraphQLNonNull(GraphQLString) },
+    url: { type: new GraphQLNonNull(GraphQLString) }
+  },
+  outputFields: {
+    linkEdge: {
+      type: linkConnection.edgeType,
+      resolve: obj => ({ node: obj, cursor: obj._id })
+    },
+    store: {
+      type: storeType,
+      resolve: () => store
+    }
+  },
+  mutateAndGetPayload: ({ title, url }) => {
+    const link = new Link({ title, url });
+    return link.save();
+  }
+});
+
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: "Query",
@@ -80,7 +105,8 @@ const schema = new GraphQLSchema({
       incrimentCounter: {
         type: GraphQLInt,
         resolve: () => ++counter
-      }
+      },
+      createLink: createLinkMutation
     })
   })
 });
