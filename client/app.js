@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Relay from "react-relay";
 
 class Home extends React.Component {
   render() {
@@ -8,3 +9,11 @@ class Home extends React.Component {
 }
 
 ReactDOM.render(<Home />, document.getElementById("root"));
+
+console.log(Relay.QL`
+query Links{
+  links{
+    title
+  }
+}
+`);

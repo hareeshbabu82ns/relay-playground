@@ -1,0 +1,18 @@
+type Counter {
+  counter: Int
+}
+
+type Link {
+  title: String
+  url: String
+}
+
+type Mutation {
+  incrimentCounter: Int
+}
+
+type Query {
+  counter: Int
+  data: [Counter]
+  links: [Link]
+}

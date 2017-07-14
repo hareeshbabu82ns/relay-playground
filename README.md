@@ -13,3 +13,4 @@
 * babel-preset-react babel-preset-es2015 babel-preset-stage-0
 * mongoose
 * graphql express-graphql
+* react-relay babel-relay-plugin
