@@ -37,16 +37,6 @@ const LinkType = new GraphQLObjectType({
     }
   })
 });
-const CounterType = new GraphQLObjectType({
-  name: "Counter",
-  fields: () => ({
-    counter: {
-      type: GraphQLInt
-    }
-  })
-});
-let counter = 100;
-const data = [{ counter: 33 }, { counter: 88 }, { counter: 43 }];
 
 class Store {}
 const store = new Store();
@@ -115,14 +105,6 @@ const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: "Query",
     fields: () => ({
-      counter: {
-        type: GraphQLInt,
-        resolve: () => counter
-      },
-      data: {
-        type: new GraphQLList(CounterType),
-        resolve: () => data
-      },
       node: nodeDefs.nodeField,
       store: {
         type: storeType,
@@ -133,10 +115,6 @@ const schema = new GraphQLSchema({
   mutation: new GraphQLObjectType({
     name: "Mutation",
     fields: () => ({
-      incrimentCounter: {
-        type: GraphQLInt,
-        resolve: () => ++counter
-      },
       createLink: createLinkMutation
     })
   })

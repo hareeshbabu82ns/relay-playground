@@ -1,7 +1,3 @@
-type Counter {
-  counter: Int
-}
-
 input CreateLinkInput {
   title: String!
   url: String!
@@ -40,7 +36,6 @@ type LinkEdge {
 }
 
 type Mutation {
-  incrimentCounter: Int
   createLink(input: CreateLinkInput!): CreateLinkPayload
 }
 
@@ -66,9 +61,6 @@ type PageInfo {
 }
 
 type Query {
-  counter: Int
-  data: [Counter]
-
   # Fetches an object given its ID
   node(
     # The ID of an object
