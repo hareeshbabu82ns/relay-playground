@@ -15,3 +15,8 @@
 * graphql express-graphql
 * react-relay babel-relay-plugin graphql-relay
 * moment lodash
+
+## branched for Relay Modern
+
+* babel-plugin-relay relay-compiler(dev)
+* 

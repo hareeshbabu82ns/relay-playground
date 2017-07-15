@@ -1,5 +1,5 @@
 import React from "react";
-import Relay from "react-relay/classic";
+import { createRefetchContainer, graphql } from "react-relay";
 import { debounce } from "lodash";
 
 import Link from "./link";
@@ -14,7 +14,11 @@ class Main extends React.Component {
   setLimit = e => {
     const limit = Number(e.target.value);
     console.log(limit);
-    this.props.relay.setVariables({ limit });
+    // this.props.relay.setVariables({ limit });
+    const refetchVariables = fragmentVariables => ({
+      limit
+    });
+    this.props.relay.refetch(refetchVariables, null);
   };
   onSubmit = e => {
     e.preventDefault();
@@ -28,7 +32,11 @@ class Main extends React.Component {
     this.setState({ title: "", url: "" });
   };
   search = query => {
-    this.props.relay.setVariables({ query });
+    // this.props.relay.setVariables({ query });
+    const refetchVariables = fragmentVariables => ({
+      query
+    });
+    this.props.relay.refetch(refetchVariables, null);
   };
   render() {
     const links = this.props.store.linkConnection.edges.map(edge =>
@@ -63,10 +71,7 @@ class Main extends React.Component {
           }}
         />
         <h3>Links</h3>
-        <select
-          onChange={this.setLimit}
-          defaultValue={this.props.relay.variables.limit}
-        >
+        <select onChange={this.setLimit}>
           <option value="25">25</option>
           <option value="50">50</option>
         </select>
@@ -76,24 +81,32 @@ class Main extends React.Component {
   }
 }
 
-export default Relay.createContainer(Main, {
-  initialVariables: {
-    limit: 50,
-    query: ""
-  },
-  fragments: {
-    store: () => Relay.QL`
-      fragment on Store{
-        id,
-        linkConnection(first: $limit, query: $query){
-          edges{
-            node{
+export default createRefetchContainer(
+  Main,
+  {
+    store: graphql.experimental`
+      fragment main_store on Store
+        @argumentDefinitions(
+          limit: { type: "Int", defaultValue: 50 }
+          query: { type: "String", defaultValue: "" }
+        ) {
+        id
+        linkConnection(first: $limit, query: $query) {
+          edges {
+            node {
               id
-              ${Link.getFragment("link")}
+              ...link_link
             }
           }
         }
       }
     `
-  }
-});
+  },
+  graphql.experimental`
+    query main_LinksRefetchQuery($limit: Int, $query: String) {
+      store {
+        ...main_store @arguments(limit: $limit, query: $query)
+      }
+    }
+  `
+);

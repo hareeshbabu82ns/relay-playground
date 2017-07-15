@@ -1,21 +1,53 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Relay from "react-relay/classic";
 
+import { QueryRenderer, graphql } from "react-relay";
+
+import environment from "./createRelayEnv";
 import Main from "./components/main";
 
-class MainRoute extends Relay.Route {
-  static routeName = "Home";
-  static queries = {
-    store: Component => Relay.QL`
-      query MainQuery{
-        store { ${Component.getFragment("store")}}
+class App extends React.Component {
+  render() {
+    const query = graphql`
+      query app_MainQuery {
+        store {
+          ...main_store
+        }
       }
-    `
-  };
+    `;
+
+    const variables = {
+      limit: 10,
+      query: ""
+    };
+
+    return (
+      <QueryRenderer
+        environment={environment}
+        query={query}
+        variables={variables}
+        render={RenderApp}
+      />
+    );
+  }
 }
 
-ReactDOM.render(
-  <Relay.RootContainer Component={Main} route={new MainRoute()} />,
-  document.getElementById("root")
-);
+function RenderApp({ error, props }) {
+  if (error) {
+    return (
+      <div>
+        {error.message}
+      </div>
+    );
+  } else if (props) {
+    return (
+      <div>
+        <Main {...props} />
+      </div>
+    );
+  } else {
+    return <div>Loading</div>;
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));

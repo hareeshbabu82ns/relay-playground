@@ -1,4 +1,7 @@
 {
   "presets": ["react", "es2015", "stage-0"],
-  "plugins": ["./client/babelRelayPlugin"]
+  "plugins": [
+    ["relay", { "compat": true, "schema": "./server/gql/schema.graphql" }],
+    "./client/babelRelayPlugin"
+  ]
 }

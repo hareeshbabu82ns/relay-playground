@@ -12,7 +12,13 @@ module.exports = {
         loader: "babel-loader",
         query: {
           presets: ["react", "es2015", "stage-0"],
-          plugins: [__dirname + "/client/babelRelayPlugin"]
+          plugins: [
+            [
+              "relay",
+              { compat: true, schema: __dirname + "/server/gql/schema.graphql" }
+            ],
+            __dirname + "/client/babelRelayPlugin"
+          ]
         }
       }
     ]
