@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 7e659206e7ed8564c57f67918c101dfb
+ * @relayHash fdcfe9ae7b1adf0ce51b3014275eceea
  */
 
 /* eslint-disable */
@@ -9,23 +9,26 @@
 
 /*::
 import type {ConcreteBatch} from 'relay-runtime';
-export type app_MainQueryResponse = {|
+export type appQueryResponse = {|
   +store: ?{| |};
 |};
 */
 
 
 /*
-query app_MainQuery {
+query appQuery(
+  $limit: Int
+  $query: String
+) {
   store {
-    ...main_store
+    ...main_store_3HzzW
     id
   }
 }
 
-fragment main_store on Store {
+fragment main_store_3HzzW on Store {
   id
-  linkConnection(first: 50, query: "") {
+  linkConnection(first: $limit, query: $query) {
     edges {
       node {
         id
@@ -44,10 +47,23 @@ fragment link_link on Link {
 
 const batch /*: ConcreteBatch*/ = {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": [
+      {
+        "kind": "LocalArgument",
+        "name": "limit",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "query",
+        "type": "String",
+        "defaultValue": null
+      }
+    ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "app_MainQuery",
+    "name": "appQuery",
     "selections": [
       {
         "kind": "LinkedField",
@@ -60,7 +76,20 @@ const batch /*: ConcreteBatch*/ = {
           {
             "kind": "FragmentSpread",
             "name": "main_store",
-            "args": null
+            "args": [
+              {
+                "kind": "Variable",
+                "name": "limit",
+                "variableName": "limit",
+                "type": null
+              },
+              {
+                "kind": "Variable",
+                "name": "query",
+                "variableName": "query",
+                "type": null
+              }
+            ]
           }
         ],
         "storageKey": null
@@ -71,11 +100,24 @@ const batch /*: ConcreteBatch*/ = {
   "id": null,
   "kind": "Batch",
   "metadata": {},
-  "name": "app_MainQuery",
+  "name": "appQuery",
   "query": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": [
+      {
+        "kind": "LocalArgument",
+        "name": "limit",
+        "type": "Int",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "query",
+        "type": "String",
+        "defaultValue": null
+      }
+    ],
     "kind": "Root",
-    "name": "app_MainQuery",
+    "name": "appQuery",
     "operation": "query",
     "selections": [
       {
@@ -98,15 +140,15 @@ const batch /*: ConcreteBatch*/ = {
             "alias": null,
             "args": [
               {
-                "kind": "Literal",
+                "kind": "Variable",
                 "name": "first",
-                "value": 50,
+                "variableName": "limit",
                 "type": "Int"
               },
               {
-                "kind": "Literal",
+                "kind": "Variable",
                 "name": "query",
-                "value": "",
+                "variableName": "query",
                 "type": "String"
               }
             ],
@@ -165,14 +207,14 @@ const batch /*: ConcreteBatch*/ = {
                 "storageKey": null
               }
             ],
-            "storageKey": "linkConnection{\"first\":50,\"query\":\"\"}"
+            "storageKey": null
           }
         ],
         "storageKey": null
       }
     ]
   },
-  "text": "query app_MainQuery {\n  store {\n    ...main_store\n    id\n  }\n}\n\nfragment main_store on Store {\n  id\n  linkConnection(first: 50, query: \"\") {\n    edges {\n      node {\n        id\n        ...link_link\n      }\n    }\n  }\n}\n\nfragment link_link on Link {\n  title\n  url\n  createdAt\n}\n"
+  "text": "query appQuery(\n  $limit: Int\n  $query: String\n) {\n  store {\n    ...main_store_3HzzW\n    id\n  }\n}\n\nfragment main_store_3HzzW on Store {\n  id\n  linkConnection(first: $limit, query: $query) {\n    edges {\n      node {\n        id\n        ...link_link\n      }\n    }\n  }\n}\n\nfragment link_link on Link {\n  title\n  url\n  createdAt\n}\n"
 };
 
 module.exports = batch;

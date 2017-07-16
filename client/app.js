@@ -8,16 +8,16 @@ import Main from "./components/main";
 
 class App extends React.Component {
   render() {
-    const query = graphql`
-      query app_MainQuery {
+    const query = graphql.experimental`
+      query appQuery($limit: Int, $query: String) {
         store {
-          ...main_store
+          ...main_store @arguments(limit: $limit, query: $query)
         }
       }
     `;
 
     const variables = {
-      limit: 10,
+      limit: 50,
       query: ""
     };
 

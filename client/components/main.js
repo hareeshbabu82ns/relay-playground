@@ -1,5 +1,5 @@
 import React from "react";
-import { createRefetchContainer, graphql } from "react-relay";
+import { createRefetchContainer, commitMutation, graphql } from "react-relay";
 import { debounce } from "lodash";
 
 import Link from "./link";
@@ -8,17 +8,13 @@ import CreateLinkMutation from "./CreateLinkMutation";
 class Main extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { title: "", url: "" };
+    this.state = { title: "", url: "", limit: 50, query: "" };
     this.search = debounce(this.search, 300);
   }
   setLimit = e => {
     const limit = Number(e.target.value);
-    console.log(limit);
-    // this.props.relay.setVariables({ limit });
-    const refetchVariables = fragmentVariables => ({
-      limit
-    });
-    this.props.relay.refetch(refetchVariables, null);
+    this.setState({ limit });
+    this.props.relay.refetch({ limit, query: this.state.query }, null);
   };
   onSubmit = e => {
     e.preventDefault();
@@ -32,11 +28,8 @@ class Main extends React.Component {
     this.setState({ title: "", url: "" });
   };
   search = query => {
-    // this.props.relay.setVariables({ query });
-    const refetchVariables = fragmentVariables => ({
-      query
-    });
-    this.props.relay.refetch(refetchVariables, null);
+    this.setState({ query });
+    this.props.relay.refetch({ query, limit: this.state.limit }, null);
   };
   render() {
     const links = this.props.store.linkConnection.edges.map(edge =>
@@ -71,7 +64,7 @@ class Main extends React.Component {
           }}
         />
         <h3>Links</h3>
-        <select onChange={this.setLimit}>
+        <select onChange={this.setLimit} defaultValue={this.state.limit}>
           <option value="25">25</option>
           <option value="50">50</option>
         </select>

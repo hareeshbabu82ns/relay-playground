@@ -13,11 +13,7 @@ module.exports = {
         query: {
           presets: ["react", "es2015", "stage-0"],
           plugins: [
-            [
-              "relay",
-              { compat: true, schema: __dirname + "/server/gql/schema.graphql" }
-            ],
-            __dirname + "/client/babelRelayPlugin"
+            ["relay", { schema: __dirname + "/server/gql/schema.graphql" }]
           ]
         }
       }
